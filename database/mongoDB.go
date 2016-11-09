@@ -19,3 +19,7 @@ func (mongo MongoDB) CreateUser(user models.User) {
 func (mongo MongoDB) CreateQuestion(question models.Question) {
 
 }
+
+func (mongo MongoDB) Close() {
+
+}
