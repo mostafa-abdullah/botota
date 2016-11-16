@@ -56,6 +56,21 @@ func (db *MySqlDB) CreateQuestion(question models.Question) {
 	checkError(err);
 }
 
+func (db *MySqlDB) GetCurrentQuestion(u models.User) models.Question {
+	q:= models.Question{}
+	return q
+}
+
+func (db *MySqlDB) GetFirstQuestion() models.Question {
+	q:= models.Question{}
+	return q
+}
+
+func (db *MySqlDB) GetNextQuestion(q models.Question) models.Question {
+	nq:= models.Question{}
+	return nq
+}
+
 // Close the open database connection
 func (db *MySqlDB) Close() {
 	db.conn.Close()

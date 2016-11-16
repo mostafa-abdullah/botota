@@ -6,7 +6,10 @@ import (
 
 type Database interface {
 	Connect()
-	CreateUser(user models.User)
-	CreateQuestion(question models.Question)
-	Close();
+	CreateUser(u models.User)
+	CreateQuestion(q models.Question)
+	GetCurrentQuestion(u models.User) models.Question
+	GetFirstQuestion() models.Question
+	GetNextQuestion(q models.Question) models.Question
+	Close()
 }
