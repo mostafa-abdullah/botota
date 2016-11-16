@@ -1,5 +1,18 @@
 package GooglePlacesAPIHandler
 
+import (
+  "googlemaps.github.io/maps"
+  "botota/utils"
+)
+const (
+  APIKey = "AIzaSyCNRXCIOJkenWGvhiIgu58ncqL6W9VOc3Y"
+)
+
+func CreateClient(){
+  c, err := maps.NewClient(maps.WithAPIKey(APIKey))
+  utils.Check(err);
+}
+
 //getHotels receives the destination TripAdvisor ID &
 //returns an array of IDs of the top 10 hotels.
 func getHotels(destinationID string) []string{
