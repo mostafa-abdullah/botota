@@ -28,7 +28,20 @@ func getNearRestaurants(hotelID string) []string{
 }
 //getAttractions receives the destination TripAdvisor ID &
 //returns an array of IDs of the top 10 attractions.
-func getAttractions(destinationID string) []string{
+func getAttractions(destination string) []string{
+  CreateClient()
+
+  q := "attractions in " + destination
+
+  r := &maps.TextSearchRequest{
+    Query:    q
+  }
+
+  resp, err := client.TextSearch(context.Background(), r)
+	utils.Check(err)
+
+	pretty.Println(resp)
+
   attractions := []string{}
   return attractions
 }
