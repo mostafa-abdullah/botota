@@ -3,6 +3,7 @@ package server
 import (
   "net/http"
   "fmt"
+  "botota/APIHandler"
 )
 
 const (
@@ -10,8 +11,8 @@ const (
 )
 
 func StartServer() {
+  http.HandleFunc("/welcome", APIHandler.WelcomeHandler)
   http.HandleFunc("/", defaultHandler)
-
   http.ListenAndServe(fmt.Sprintf(":" + PORT), nil)
 }
 
