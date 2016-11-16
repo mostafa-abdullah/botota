@@ -26,7 +26,7 @@ func (db *MongoDB) Connect() {
 
 func (db *MongoDB) CreateUser(u models.User) {
 	u.CurrentQuestionId = 1
-	
+
 	c := db.session.DB(DB).C(USERS_COLLECTION)
 	err := c.Insert(u)
 

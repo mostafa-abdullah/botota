@@ -4,6 +4,15 @@ import (
 	"botota/models"
 )
 
+var (
+	Mongo MongoDB
+)
+
+func InitDB() {
+	Mongo = MongoDB{}
+	Mongo.Connect()
+}
+
 type Database interface {
 	Connect()
 	CreateUser(u models.User)
