@@ -12,8 +12,8 @@ import (
 const (
 	DB_HOST = "tcp(127.0.0.1:3306)"
 	DB_NAME = "botota"
-	DB_USER = "<< MySql username >>"
-	DB_PASS = "<< MySql password >>"
+	DB_USER = "root"
+	DB_PASS = "31-15451"
 
 	USERS_TABLE = "users"
 	QUESTIONS_TABLE = "questions"
@@ -34,24 +34,30 @@ func (db *MySqlDB) Connect() {
 }
 
 // Insert a new user into the database
-func (db MySqlDB) CreateUser(u models.User) {
+func (db *MySqlDB) CreateUser(u models.User) {
 
 	createUsersTableIfNotExists(db.conn)
 
-	_, err := db.conn.Exec("insert into " + USERS_TABLE + " (uuid) values (?)", u.Uuid)
+	stmt, err := db.conn.Prepare("INSERT INTO " + USERS_TABLE + " (uuid) VALUES (?)")
+	checkError(err);
+
+	_, err = stmt.Exec(u.Uuid);
 	checkError(err);
 }
 
 // Insert a new question into the database
-func (db MySqlDB) CreateQuestion(question models.Question) {
+func (db *MySqlDB) CreateQuestion(question models.Question) {
 	createQuestionsTableIfNotExists(db.conn)
 
-	_, err := db.conn.Exec("insert into " + QUESTIONS_TABLE + " (text, nextQuestion) values (?, ?)", question.Text, question.NextQuestionId)
+	stmt, err := db.conn.Prepare("INSERT into " + QUESTIONS_TABLE + " (text, nextQuestion) VALUES (?, ?)")
+	checkError(err);
+
+	_, err = stmt.Exec(question.Text, question.NextQuestionId)
 	checkError(err);
 }
 
 // Close the open database connection
-func (db MySqlDB) Close() {
+func (db *MySqlDB) Close() {
 	db.conn.Close()
 }
 
