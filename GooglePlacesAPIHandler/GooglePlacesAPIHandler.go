@@ -2,15 +2,17 @@ package GooglePlacesAPIHandler
 
 import (
   "googlemaps.github.io/maps"
-  "botota/utils"
+  "github.com/kr/pretty"
+  "golang.org/x/net/context"
 )
 const (
   APIKey = "AIzaSyCNRXCIOJkenWGvhiIgu58ncqL6W9VOc3Y"
 )
 
-func CreateClient(){
-  c, err := maps.NewClient(maps.WithAPIKey(APIKey))
-  utils.Check(err);
+func CreateClient() *maps.Client{
+  c, _ := maps.NewClient(maps.WithAPIKey(APIKey))
+  // utils.Check(err);
+  return c;
 }
 
 //getHotels receives the destination TripAdvisor ID &
@@ -28,17 +30,15 @@ func getNearRestaurants(hotelID string) []string{
 }
 //getAttractions receives the destination TripAdvisor ID &
 //returns an array of IDs of the top 10 attractions.
-func getAttractions(destination string) []string{
-  CreateClient()
+func GetAttractions(destination string) []string{
+  client := CreateClient()
 
   q := "attractions in " + destination
 
-  r := &maps.TextSearchRequest{
-    Query:    q
-  }
+  r := &maps.TextSearchRequest{Query: q}
 
-  resp, err := client.TextSearch(context.Background(), r)
-	utils.Check(err)
+  resp, _ := client.TextSearch(context.Background(), r)
+	// utils.Check(err)
 
 	pretty.Println(resp)
 
