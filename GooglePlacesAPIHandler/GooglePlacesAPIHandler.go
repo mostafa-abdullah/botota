@@ -1,4 +1,4 @@
-package TripAdvisorAPIHandler
+package GooglePlacesAPIHandler
 
 //getHotels receives the destination TripAdvisor ID &
 //returns an array of IDs of the top 10 hotels.
