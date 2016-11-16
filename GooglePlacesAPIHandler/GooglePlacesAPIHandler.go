@@ -8,6 +8,7 @@ import (
 )
 const (
   APIKey = "AIzaSyCNRXCIOJkenWGvhiIgu58ncqL6W9VOc3Y"
+  MaxRestDist = 2000
 )
 
 func CreateClient() *maps.Client{
@@ -25,12 +26,26 @@ func getHotels(destinationID string) []string{
 }
 //getNearRestaurants receives the chosen hotel TripAdvisor ID &
 //returns an arrays of IDs of the top 10 nearby restaurants.
-func getNearRestaurants(hotelID string) []string{
+func GetNearRestaurants(hotelLat string, hotelLon string) []string{
+  client := CreateClient()
+
+  //prepare location parameter
+  location := hotelLat + "," + hotelLon
+  l, err := maps.ParseLatLng(location)
+  utils.Check(err)
+
+  r := &maps.NearbySearchRequest{
+    Location:   &l,
+    Type:       "restaurant",
+    Radius:     MaxRestDist }
+  resp, err := client.NearbySearch(context.Background(), r)
+  utils.Check(err)
+  pretty.Println(resp)
+
   restaurants := []string{}
   return restaurants
 }
-//getAttractions receives the destination TripAdvisor ID &
-//returns an array of IDs of the top 10 attractions.
+
 func GetAttractions(destination string) []string{
   client := CreateClient()
 
@@ -39,9 +54,8 @@ func GetAttractions(destination string) []string{
   r := &maps.TextSearchRequest{Query: q}
 
   resp, err := client.TextSearch(context.Background(), r)
-	utils.Check(err)
-
-	pretty.Println(resp)
+  utils.Check(err)
+  pretty.Println(resp)
 
   attractions := []string{}
   return attractions
