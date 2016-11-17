@@ -16,7 +16,7 @@ func Process(u models.User, msg string) (models.Question, error, bool) {
   // Get the question previously asked to the user
   cq := database.Mongo.GetCurrentQuestion(u)
 
-  err := validate(cq, msg)
+  err := validate(cq, u, msg)
 
   if err != nil {
     return cq, err, false
@@ -38,11 +38,17 @@ func Process(u models.User, msg string) (models.Question, error, bool) {
 }
 
 //validate makes sure that the user sent a valid message according to the asked question.
-func validate(cq models.Question, msg string) error {
+func validate(cq models.Question, u models.User, msg string) error {
   reg, _ := regexp.Compile(cq.Regex)
 
   if !reg.MatchString(msg) {
       return errors.New("Invalid Input: the given message doesn't match the required format!")
+  }
+
+  if cq.Id == 5 {
+    if strconv.Atoi(msg) >= len(u.Hotels) {
+      return errors.New("Invalid Input: The hotel number is invalid.")
+    }
   }
 
   return nil
@@ -61,11 +67,13 @@ func storeInfo(u models.User, msg string, qid int) {
     u.EndDate = msg
   case 4:
     u.Budget, err = strconv.Atoi(msg)
+    utils.Check(err)
   case 5:
-    u.Hotel, err = strconv.Atoi(msg)
+    var hotelIdx int
+    hotelIdx, err = strconv.Atoi(msg)
+    utils.Check(err)
+    u.ChosenHotel, err = u.Hotels[hotelIdx - 1]
   }
-
-  utils.Check(err)
 
   database.Mongo.UpdateUser(u)
 }

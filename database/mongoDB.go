@@ -59,7 +59,8 @@ func (db *MongoDB) UpdateUser(u models.User) {
 		"enddate": u.EndDate,
 		"budget": u.Budget,
 		"currentquestionid": u.CurrentQuestionId,
-		"hotel": u.Hotel}}
+		"hotels": u.Hotels,
+		"chosenhotel": u.ChosenHotel}}
 
 	err := c.Update(colQuerier, change)
 

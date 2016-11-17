@@ -6,6 +6,7 @@ type User struct {
   StartDate string
   EndDate string
   Budget int
-  Hotel int
+  Hotels []Place
+  ChosenHotel Place
   CurrentQuestionId int
 }
