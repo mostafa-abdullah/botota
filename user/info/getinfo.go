@@ -46,7 +46,9 @@ func validate(cq models.Question, u models.User, msg string) error {
   }
 
   if cq.Id == 5 {
-    if strconv.Atoi(msg) >= len(u.Hotels) {
+    i, err := strconv.Atoi(msg)
+    utils.Check(err)
+    if  i >= len(u.Hotels) {
       return errors.New("Invalid Input: The hotel number is invalid.")
     }
   }
@@ -72,7 +74,7 @@ func storeInfo(u models.User, msg string, qid int) {
     var hotelIdx int
     hotelIdx, err = strconv.Atoi(msg)
     utils.Check(err)
-    u.ChosenHotel, err = u.Hotels[hotelIdx - 1]
+    u.ChosenHotel = u.Hotels[hotelIdx - 1]
   }
 
   database.Mongo.UpdateUser(u)

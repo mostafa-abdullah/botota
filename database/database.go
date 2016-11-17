@@ -22,5 +22,8 @@ type Database interface {
 	GetCurrentQuestion(u models.User) models.Question
 	GetFirstQuestion() models.Question
 	GetNextQuestion(q models.Question) models.Question
+	SeedQuestions()
+	ClearUsers()
+	ClearQuestions()
 	Close()
 }
