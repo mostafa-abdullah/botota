@@ -1,4 +1,4 @@
-package APIHandler
+package welcome
 
 import (
   "net/http"
@@ -13,7 +13,7 @@ type Response struct {
   Uuid string     `json:"uuid"`
 }
 
-func WelcomeHandler(w http.ResponseWriter, r *http.Request){
+func Handler(w http.ResponseWriter, r *http.Request){
   //create user uuid
   u := createUserUUID();
 
