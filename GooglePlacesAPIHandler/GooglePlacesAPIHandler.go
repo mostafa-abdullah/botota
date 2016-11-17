@@ -50,6 +50,6 @@ func GetAttractions(destination string) []models.Place {
 
 //createSchedule receives the TripAdvisor IDs of the destination,the chosen hotel, start date & end date &
 //returns a schedule with timing allocated for each attraction and for lunch time.
-func createSchedule(destinationID string, hotelID string, startDate string, endDate string) string {
+func CreateSchedule(destination string, hotel models.Place, startDate string, endDate string) string {
 	return ""
 }
