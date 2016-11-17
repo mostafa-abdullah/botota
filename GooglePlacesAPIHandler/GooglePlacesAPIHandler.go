@@ -2,10 +2,10 @@ package GooglePlacesAPIHandler
 
 import (
 	"botota/utils"
-	"github.com/kr/pretty"
 	"golang.org/x/net/context"
 	"googlemaps.github.io/maps"
 	"sort"
+  "botota/models"
 )
 
 const (
@@ -14,18 +14,17 @@ const (
 
 //GetHotels receives the destination city &
 //returns an array of Places for the top 20 hotels.
-func GetHotels(destination string) []Place {
+func GetHotels(destination string) []models.Place {
 	r := textSearch("hotels", destination)
 	h := formatResults(r)
 	sort.Sort(ByRating(h))
-	pretty.Println(h)
+	// pretty.Println(h)
 	return h
-
 }
 
 //GetNearRestaurants receives the chosen hotel as a Place struct
 //returns an arrays of Places for the top 20 nearby restaurants.
-func GetNearRestaurants(hotel Place) []Place {
+func GetNearRestaurants(hotel models.Place) []models.Place {
 	client := CreateClient()
 	r := &maps.NearbySearchRequest{
 		Location: &hotel.Location,
@@ -35,18 +34,17 @@ func GetNearRestaurants(hotel Place) []Place {
 	utils.Check(err)
 	rest := formatResults(resp.Results)
 	sort.Sort(ByRating(rest))
-	pretty.Println(rest)
-
+	// pretty.Println(rest)
 	return rest
 }
 
 //GetAttractions receives the destination &
 //returns an array of Places for the top 20 attractions.
-func GetAttractions(destination string) []Place {
+func GetAttractions(destination string) []models.Place {
 	r := textSearch("attractions", destination)
 	a := formatResults(r)
 	sort.Sort(ByRating(a))
-	pretty.Println(a)
+	// pretty.Println(a)
 	return a
 }
 

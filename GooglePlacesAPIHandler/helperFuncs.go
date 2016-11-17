@@ -4,13 +4,10 @@ import (
 	"botota/utils"
 	"golang.org/x/net/context"
 	"googlemaps.github.io/maps"
+  "botota/models"
 )
 
-type Place struct {
-	Name     string
-	Location maps.LatLng
-	Rating   float32
-}
+
 
 const (
 	APIKey = "AIzaSyCNRXCIOJkenWGvhiIgu58ncqL6W9VOc3Y"
@@ -18,7 +15,7 @@ const (
 
 // ByRating implements sort.Interface for []maps.PlacesSearchResult based on
 // the Rating field.
-type ByRating []Place
+type ByRating []models.Place
 
 func (a ByRating) Len() int           { return len(a) }
 func (a ByRating) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
@@ -30,10 +27,10 @@ func CreateClient() *maps.Client {
 	return c
 }
 
-func formatResults(results []maps.PlacesSearchResult) []Place {
-	places := []Place{}
+func formatResults(results []maps.PlacesSearchResult) []models.Place {
+	places := []models.Place{}
 	for _, r := range results {
-		p := Place{r.Name, r.Geometry.Location, r.Rating}
+		p := models.Place{r.Name, r.Geometry.Location, r.Rating}
 		places = append(places, p)
 	}
 	return places
