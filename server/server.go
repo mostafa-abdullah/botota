@@ -1,8 +1,9 @@
 package server
 
 import (
+  "botota/api/welcome"
+  "botota/api/chat"
   "botota/database"
-  "botota/APIHandler"
   "net/http"
   "fmt"
 )
@@ -13,7 +14,8 @@ const (
 
 func StartServer() {
   database.InitDB()
-  http.HandleFunc("/welcome", APIHandler.WelcomeHandler)
+  http.HandleFunc("/welcome", welcome.Handler)
+  http.HandleFunc("/chat", chat.Handler)
   http.HandleFunc("/", defaultHandler)
   http.ListenAndServe(fmt.Sprintf(":" + PORT), nil)
 }
