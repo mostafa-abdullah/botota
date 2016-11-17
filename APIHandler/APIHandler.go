@@ -1,4 +1,5 @@
 package APIHandler
+
 import (
   "net/http"
   "github.com/satori/go.uuid"
@@ -6,10 +7,12 @@ import (
   "botota/database"
   "botota/models"
 )
+
 type Response struct {
   Message string `json:"message"`
   Uuid string     `json:"uuid"`
 }
+
 func WelcomeHandler(w http.ResponseWriter, r *http.Request){
   //create user uuid
   u := createUserUUID();
@@ -21,8 +24,7 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request){
   database.Mongo.CreateUser(user);
 
   //get first question
-  //q := database.Mongo.GetFirstQuestion().Text;
-  q :="hdsdds"
+  q := database.Mongo.GetFirstQuestion().Text;
 
   //prepare response
   res := Response{q, u}
@@ -36,8 +38,8 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request){
   //write json response
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
-
 }
+
 func createUserUUID() string {
   u := uuid.NewV4()
   uString := u.String();
