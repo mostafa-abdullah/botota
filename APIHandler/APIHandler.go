@@ -43,6 +43,6 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request){
 func createUserUUID() string {
   u := uuid.NewV4()
   uString := u.String();
-  // fmt.Printf("%s\n",uString);
+
   return uString;
 }
