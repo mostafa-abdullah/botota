@@ -2,8 +2,14 @@ package GooglePlacesAPIHandler
 
 import (
   "sort"
+  "googlemaps.github.io/maps"
+  "golang.org/x/net/context"
+  "botota/utils"
+  "github.com/kr/pretty"
 )
-
+const(
+  MaxRestDist = 2000
+)
 //getHotels receives the destination TripAdvisor ID &
 //returns an array of IDs of the top 10 hotels.
 func getHotels(destinationID string) []string{
@@ -13,24 +19,19 @@ func getHotels(destinationID string) []string{
 }
 //getNearRestaurants receives the chosen hotel TripAdvisor ID &
 //returns an arrays of IDs of the top 10 nearby restaurants.
-func GetNearRestaurants(hotelLat string, hotelLon string) []string{
+func GetNearRestaurants(hotel Place) []Place{
   client := CreateClient()
-
-  //prepare location parameter
-  location := hotelLat + "," + hotelLon
-  l, err := maps.ParseLatLng(location)
-  utils.Check(err)
-
   r := &maps.NearbySearchRequest{
-    Location:   &l,
+    Location:   &hotel.Location,
     Type:       "restaurant",
     Radius:     MaxRestDist }
   resp, err := client.NearbySearch(context.Background(), r)
   utils.Check(err)
-  pretty.Println(resp)
+  rest := formatResults(resp.Results)
+  sort.Sort(ByRating(rest))
+  pretty.Println(rest)
 
-  restaurants := []string{}
-  return restaurants
+  return rest
 }
 
 
@@ -40,10 +41,10 @@ func GetNearRestaurants(hotelLat string, hotelLon string) []string{
 //returns an array of IDs of the top 20 attractions.
 func GetAttractions(destination string) []Place{
   r := textSearch("attractions", destination)
-  h  := formatResults(r)
-  sort.Sort(ByRating(h))
-  //pretty.Println(h)
-  return h
+  a  := formatResults(r)
+  sort.Sort(ByRating(a))
+  pretty.Println(a)
+  return a
 }
 //createSchedule receives the TripAdvisor IDs of the destination,the chosen hotel, start date & end date &
 //returns a schedule with timing allocated for each attraction and for lunch time.
