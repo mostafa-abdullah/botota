@@ -3,6 +3,8 @@ import (
   "net/http"
   "github.com/satori/go.uuid"
   "encoding/json"
+  "botota/database"
+  "botota/models"
 )
 type Response struct {
   Message string `json:"message"`
@@ -12,15 +14,14 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request){
   //create user uuid
   u := createUserUUID();
 
-  //create a new User model
-  // user := models.User{Uuid: u}
+  create a new User model
+  user := models.User{Uuid: u}
 
   //insert the new user to the database
-  // database.CreateUser(user);
+  database.Mongo.CreateUser(user);
 
   //get first question
-  // q := database.GetFirstQuestion().Text;
-  q := "Welcome! Awel so2al aho"
+  q := database.Mongo.GetFirstQuestion().Text;
 
   //prepare response
   res := Response{q, u}
