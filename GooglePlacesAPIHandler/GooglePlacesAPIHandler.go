@@ -1,11 +1,11 @@
 package GooglePlacesAPIHandler
 
 import (
+	"botota/models"
 	"botota/utils"
 	"golang.org/x/net/context"
 	"googlemaps.github.io/maps"
 	"sort"
-  "botota/models"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 func GetHotels(destination string) []models.Place {
 	r := textSearch("hotels", destination)
 	h := formatResults(r)
-	sort.Sort(ByRating(h))
+	sort.Sort(models.ByRating(h))
 	// pretty.Println(h)
 	return h
 }
@@ -33,7 +33,7 @@ func GetNearRestaurants(hotel models.Place) []models.Place {
 	resp, err := client.NearbySearch(context.Background(), r)
 	utils.Check(err)
 	rest := formatResults(resp.Results)
-	sort.Sort(ByRating(rest))
+	sort.Sort(models.ByRating(rest))
 	// pretty.Println(rest)
 	return rest
 }
@@ -43,7 +43,7 @@ func GetNearRestaurants(hotel models.Place) []models.Place {
 func GetAttractions(destination string) []models.Place {
 	r := textSearch("attractions", destination)
 	a := formatResults(r)
-	sort.Sort(ByRating(a))
+	sort.Sort(models.ByRating(a))
 	// pretty.Println(a)
 	return a
 }

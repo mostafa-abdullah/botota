@@ -1,25 +1,15 @@
 package GooglePlacesAPIHandler
 
 import (
+	"botota/models"
 	"botota/utils"
 	"golang.org/x/net/context"
 	"googlemaps.github.io/maps"
-  "botota/models"
 )
-
-
 
 const (
 	APIKey = "AIzaSyCNRXCIOJkenWGvhiIgu58ncqL6W9VOc3Y"
 )
-
-// ByRating implements sort.Interface for []maps.PlacesSearchResult based on
-// the Rating field.
-type ByRating []models.Place
-
-func (a ByRating) Len() int           { return len(a) }
-func (a ByRating) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByRating) Less(i, j int) bool { return a[i].Rating > a[j].Rating }
 
 func CreateClient() *maps.Client {
 	c, err := maps.NewClient(maps.WithAPIKey(APIKey))
