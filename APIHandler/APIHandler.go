@@ -14,14 +14,15 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request){
   //create user uuid
   u := createUserUUID();
 
-  create a new User model
+  //create a new User model
   user := models.User{Uuid: u}
 
   //insert the new user to the database
   database.Mongo.CreateUser(user);
 
   //get first question
-  q := database.Mongo.GetFirstQuestion().Text;
+  //q := database.Mongo.GetFirstQuestion().Text;
+  q :="hdsdds"
 
   //prepare response
   res := Response{q, u}
