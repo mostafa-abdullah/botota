@@ -6,5 +6,6 @@ type User struct {
   StartDate string
   EndDate string
   Budget int
+  Hotel int
   CurrentQuestionId int
 }
