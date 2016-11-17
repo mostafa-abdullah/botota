@@ -2,8 +2,11 @@ package database
 
 import (
 	"botota/models"
+	"botota/utils"
+	"encoding/json"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"os"
 )
 
 const (
@@ -86,13 +89,41 @@ func (db *MongoDB) GetFirstQuestion() models.Question {
 }
 
 func (db *MongoDB) GetNextQuestion(q models.Question) models.Question {
-	c := db.session.DB(DB).C("questions")
+	c := db.session.DB(DB).C(QUESTIONS_COLLECTION)
 
 	res := models.Question{}
 	err := c.Find(bson.M{"id": q.NextQuestionId}).One(&res)
 	checkError(err)
 
 	return res
+}
+
+func (db *MongoDB) SeedQuestions() {
+	var qArr []models.Question
+
+	// read the json file
+	jsonFile, err := os.Open("JSON/questions.json")
+	utils.Check(err)
+
+	// parse and decode the file
+	jsonParser := json.NewDecoder(jsonFile)
+	err = jsonParser.Decode(&qArr)
+	utils.Check(err)
+
+	// insert the data into the Database
+	for _, q := range qArr {
+		db.CreateQuestion(q)
+	}
+}
+
+func (db *MongoDB) ClearUsers() {
+	c := db.session.DB(DB).C(USERS_COLLECTION)
+	c.RemoveAll(nil)
+}
+
+func (db *MongoDB) ClearQuestions() {
+	c := db.session.DB(DB).C(QUESTIONS_COLLECTION)
+	c.RemoveAll(nil)
 }
 
 func (db *MongoDB) Close() {
