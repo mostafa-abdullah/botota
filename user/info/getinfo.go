@@ -7,6 +7,7 @@ import (
   "errors"
   "regexp"
   "strconv"
+  "time"
 )
 
 //GetInfo validates the message sent by the user and moves to next question
@@ -52,6 +53,24 @@ func validate(cq models.Question, u models.User, msg string) error {
       return errors.New("Invalid Input: the given message doesn't match the required format!")
   }
 
+  //validate dates
+  if cq.Id == 2 || cq.Id == 3 {
+    form := "02/01/2006" //equivalent to dd/mm/yyyy
+  	t, _ := time.Parse(form, msg)
+
+    //validate future date
+    if !t.After(time.Now()) {
+      return errors.New("Invalid Input: The date should be in the future!")
+    }
+
+    //validate end date > start date
+    if cq.Id == 3 {
+      start, _  := time.Parse(form, u.StartDate)
+      if !t.After(start){
+        return errors.New("Invalid Input: Trip end date should be after its start date .")
+      }
+    }
+  }
 
   if cq.Id == 5 {
     i, err := strconv.Atoi(msg)
