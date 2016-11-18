@@ -3,31 +3,31 @@
     "Id": 1,
     "Text": "What is your trip destination?",
     "NextQuestionId": 2,
-    "Regex": "[a-zA-Z ]+$"
+    "Regex": "^[a-zA-Z]+$"
   },
   {
     "Id": 2,
     "Text": "When does your trip start(dd/mm/yyyy)?",
     "NextQuestionId": 3,
-    "Regex": "\\d{2}\\/\\d{2}\\/\\d{4}"
+    "Regex": "^\\d{2}\\/\\d{2}\\/\\d{4}$"
   },
   {
     "Id":3,
     "Text": "When does your trip end(dd/mm/yyyy)?",
     "NextQuestionId": 4,
-    "Regex": "\\d{2}\\/\\d{2}\\/\\d{4}"
+    "Regex": "^\\d{2}\\/\\d{2}\\/\\d{4}$"
   },
   {
     "Id":4,
     "Text": "What is your budget in dollars?",
     "NextQuestionId": 5,
-    "Regex": "\\d+$"
+    "Regex": "^\\d+$"
 
   },
   {
     "Id": 5,
     "Text": "Please choose a hotel from below.(Pick its number!)",
     "NextQuestionId": null,
-    "Regex": "\\d+$"
+    "Regex": "^\\d+$"
   }
 ]
