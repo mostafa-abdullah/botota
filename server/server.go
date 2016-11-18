@@ -6,6 +6,7 @@ import (
   "botota/database"
   "net/http"
   "fmt"
+  cors "github.com/heppu/simple-cors"
 )
 
 const (
@@ -14,10 +15,13 @@ const (
 
 func StartServer() {
   database.InitDB()
-  http.HandleFunc("/welcome", welcome.Handler)
-  http.HandleFunc("/chat", chat.Handler)
-  http.HandleFunc("/", defaultHandler)
-  http.ListenAndServe(fmt.Sprintf(":" + PORT), nil)
+
+  mux := http.NewServeMux()
+	mux.HandleFunc("/welcome", welcome.Handler)
+	mux.HandleFunc("/chat", chat.Handler)
+	mux.HandleFunc("/", defaultHandler)
+
+  http.ListenAndServe(fmt.Sprintf(":" + PORT), cors.CORS(mux))
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {

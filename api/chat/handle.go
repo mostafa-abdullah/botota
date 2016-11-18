@@ -28,16 +28,19 @@ func Handler(w http.ResponseWriter, r *http.Request){
     return
   }
 
-  r.ParseForm()
-  msgs := r.Form["message"]
+  var body map[string]interface{}
 
-  if len(msgs) == 0 {
+  json.NewDecoder(r.Body).Decode(&body);
+
+  // get the message in the body
+  _, msgFound := body["message"]
+
+  if !msgFound {
     http.Error(w, "Missing message key in request body.", http.StatusBadRequest)
     return
   }
 
-  // get the message in the body
-  msg := msgs[0]
+  msg := body["message"].(string)
 
   reply := getReply(user, msg)
   res := Response{reply}
