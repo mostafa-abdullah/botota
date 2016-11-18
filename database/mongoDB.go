@@ -100,7 +100,13 @@ func (db *MongoDB) GetNextQuestion(q models.Question) models.Question {
 	return res
 }
 
-func (db *MongoDB) SeedQuestions() {
+func (db *MongoDB) SeedQuestionsIfNotSeeded() {
+	count := questionsCount(db)
+
+	if(count > 0) {
+		return
+	}
+
 	var qArr []models.Question
 
 	// read the json file
@@ -116,6 +122,13 @@ func (db *MongoDB) SeedQuestions() {
 	for _, q := range qArr {
 		db.CreateQuestion(q)
 	}
+}
+
+func questionsCount(db *MongoDB) int {
+	c := db.session.DB(DB).C(QUESTIONS_COLLECTION)
+
+	count, _ := c.Count()
+	return count
 }
 
 func (db *MongoDB) ClearUsers() {

@@ -11,6 +11,7 @@ var (
 func InitDB() {
 	Mongo = MongoDB{}
 	Mongo.Connect()
+	Mongo.SeedQuestionsIfNotSeeded()
 }
 
 type Database interface {
@@ -22,7 +23,7 @@ type Database interface {
 	GetCurrentQuestion(u models.User) models.Question
 	GetFirstQuestion() models.Question
 	GetNextQuestion(q models.Question) models.Question
-	SeedQuestions()
+	SeedQuestionsIfNotSeeded()
 	ClearUsers()
 	ClearQuestions()
 	Close()
