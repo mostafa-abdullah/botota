@@ -73,7 +73,7 @@ func getReply(u models.User, msg string) string {
 			reply = byeMessage
 		}
 	case 1:
-		reply = welcomeMessage
+		reply = welcomeMessage + " "
 	case 6:
 		// Gathered all info; return the schedule + restart question
 		updatedUser, _ := database.Mongo.GetUser(u.Uuid)

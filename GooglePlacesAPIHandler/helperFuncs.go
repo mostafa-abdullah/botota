@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	APIKey = "AIzaSyAYZ62oGf13WhcCunctNKnXRZU7C6wEdyE"
+	APIKey = "AIzaSyA4Csx3XE0sSwDArxbesJF0MpY_fsLJbeI"
 )
 
 func CreateClient() *maps.Client {

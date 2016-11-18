@@ -15,8 +15,6 @@ import (
 //receives the chatting user and the sent message
 //returns the next question, an error message and a boolean to indicate if all questions were asked
 func Process(u models.User, msg string) (models.Question, error, bool) {
-	var nq models.Question
-
 	// Get the question previously asked to the user
 	cq := database.Mongo.GetCurrentQuestion(u)
 
@@ -27,15 +25,21 @@ func Process(u models.User, msg string) (models.Question, error, bool) {
 	}
 
 	// Validation succeeded. Store in the database
+	//move to next question
 	u.CurrentQuestionId = cq.NextQuestionId
 	storeInfo(u, msg, cq.Id)
 
-	if u.CurrentQuestionId == 0 {
-		// done with all the questions
-		return nq, err,true
+	if u.CurrentQuestionId == 0{
+			// done with all the questions
+		if strings.EqualFold(msg,"n"){
+ 			//no more chat
+			return models.Question{Id: 0}, err,true
+		}else{
+			//restart
+			return database.Mongo.GetFirstQuestion(),err,false
+		}
 	}
-	nq = database.Mongo.GetNextQuestion(cq)
-
+	nq := database.Mongo.GetCurrentQuestion(u)
 	return nq, err,false
 }
 
@@ -98,7 +102,7 @@ func storeInfo(u models.User, msg string, qid int) {
 		u.ChosenHotel = u.Hotels[hotelIdx-1]
 	case 6:
 		if strings.EqualFold(msg,"y"){
-			clearUserInfo(u)
+			clearUserInfo(&u)
 		}else{
 			return
 		}
@@ -106,7 +110,7 @@ func storeInfo(u models.User, msg string, qid int) {
 
 	database.Mongo.UpdateUser(u)
 }
-func clearUserInfo(u models.User){
+func clearUserInfo(u *models.User){
 	u.Destination = ""
 	u.StartDate	=	""
 	u.EndDate	=	""
