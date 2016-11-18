@@ -70,12 +70,12 @@ func getReply(u models.User, msg string) string {
 	switch q.Id {
 	case 0:
 		if done {
-			reply = byeMessage
+			return byeMessage
 		}
-	case 1:
+	case 1: //restart chat
 		reply = welcomeMessage + " "
 	case 6:
-		// Gathered all info; return the schedule + restart question
+		// Gathered all info; return the schedule
 		updatedUser, _ := database.Mongo.GetUser(u.Uuid)
 		schedule := GooglePlacesAPIHandler.CreateSchedule(u.Destination, updatedUser.ChosenHotel, u.StartDate, u.EndDate)
 		reply = schedule + "\n"
