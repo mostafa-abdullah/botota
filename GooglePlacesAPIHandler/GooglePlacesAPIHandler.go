@@ -16,7 +16,7 @@ const (
 	HOTEL_DEPARTURE = 10
 	BUFFER_TIME = 2
 	RETURN_TIME = 15
-	TIMEFORMAT = "2006/01/02"
+	TIME_FORMAT = "02/01/2006"
 	NANO_TO_HOUR = 3600000000000
 
 )
@@ -28,8 +28,6 @@ func GetHotels(destination string) []models.Place {
 	h := formatResults(r)
 	sort.Sort(models.ByRating(h))
 
-	// fmt.Println(h[0])
-	// pretty.Println(h)
 	return h
 }
 
@@ -45,7 +43,6 @@ func GetNearRestaurants(hotel models.Place) []models.Place {
 	utils.Check(err)
 	rest := formatResults(resp.Results)
 	sort.Sort(models.ByRating(rest))
-	// pretty.Println(rest)
 	return rest
 }
 
@@ -55,7 +52,6 @@ func GetAttractions(destination string) []models.Place {
 	r := textSearch("attractions", destination)
 	a := formatResults(r)
 	sort.Sort(models.ByRating(a))
-	// pretty.Println(a)
 	return a
 }
 
@@ -65,8 +61,8 @@ func CreateSchedule(destination string, hotel models.Place, startDate string, en
 	attractions := GetAttractions(destination)
 	restaurants := GetNearRestaurants(hotel)
 
-  t1, _ := time.Parse(TIMEFORMAT, startDate)
-  t2, _ := time.Parse(TIMEFORMAT, endDate)
+  t1, _ := time.Parse(TIME_FORMAT, startDate)
+  t2, _ := time.Parse(TIME_FORMAT, endDate)
 
   duration := t2.Sub(t1)
 	days := int(duration.Hours()) / 24
