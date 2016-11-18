@@ -52,7 +52,13 @@ func Handler(w http.ResponseWriter, r *http.Request){
 func getReply(u models.User, msg string) string {
   q, err, done := info.Process(u, msg)
   if err != nil {
-    return err.Error() + "\n" + q.Text;
+    ret := err.Error() + "\n" + q.Text
+
+    if q.Id == 5 {
+      ret += "\n" + formattedHotels(u.Hotels)
+    }
+
+    return ret
   }
 
   if done {
