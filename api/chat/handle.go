@@ -57,7 +57,8 @@ func getReply(u models.User, msg string) string {
 
   if done {
     // Gathered all info; return the schedule
-    return GooglePlacesAPIHandler.CreateSchedule(u.Destination, u.ChosenHotel, u.StartDate, u.EndDate)
+    updatedUser, _ := database.Mongo.GetUser(u.Uuid)
+    return GooglePlacesAPIHandler.CreateSchedule(u.Destination, updatedUser.ChosenHotel, u.StartDate, u.EndDate)
   }
 
   if q.Id == 5 {
