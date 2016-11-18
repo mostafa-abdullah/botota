@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	welcomeMessage = "Welcome to Botota! Your customized trip planner!"
 	byeMessage     = "Thank you for using botota! It's been nice chatting with you!"
 )
 
@@ -72,8 +71,6 @@ func getReply(u models.User, msg string) string {
 		if done {
 			return byeMessage
 		}
-	case 1: //restart chat
-		reply = welcomeMessage + " "
 	case 6:
 		// Gathered all info; return the schedule
 		updatedUser, _ := database.Mongo.GetUser(u.Uuid)
