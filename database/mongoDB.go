@@ -9,9 +9,13 @@ import (
 	"os"
 )
 
+var (
+	URL = os.Getenv("MONGO_URL")
+	DB = os.Getenv("MONGO_DB")
+
+)
+
 const (
-	URL = "localhost:27017"
-	DB = "botota"
 	USERS_COLLECTION = "users"
 	QUESTIONS_COLLECTION = "questions"
 )

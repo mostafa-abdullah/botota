@@ -6,11 +6,8 @@ import (
   "botota/database"
   "net/http"
   "fmt"
+  "os"
   cors "github.com/heppu/simple-cors"
-)
-
-const (
-  PORT = "3000"
 )
 
 func StartServer() {
@@ -21,7 +18,13 @@ func StartServer() {
 	mux.HandleFunc("/chat", chat.Handler)
 	mux.HandleFunc("/", defaultHandler)
 
-  http.ListenAndServe(fmt.Sprintf(":" + PORT), cors.CORS(mux))
+  port := os.Getenv("PORT")
+
+  if port == "" {
+    port = "3000"
+  }
+
+  http.ListenAndServe(fmt.Sprintf(":" + port), cors.CORS(mux))
 }
 
 func defaultHandler(w http.ResponseWriter, r *http.Request) {
