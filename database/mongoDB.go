@@ -43,14 +43,18 @@ func (db *MongoDB) CreateQuestion(q models.Question) {
 	checkError(err)
 }
 
-func (db *MongoDB) GetUser(uuid string) models.User {
+//GetUser returns the user if it was found, otherwise returns a false flag along with an empty user
+func (db *MongoDB) GetUser(uuid string) (models.User, bool) {
 	c := db.session.DB(DB).C(USERS_COLLECTION)
 
 	res := models.User{}
 	err := c.Find(bson.M{"uuid": uuid}).One(&res)
-	checkError(err)
 
-	return res
+	if err != nil {
+		return res, false
+	}
+
+	return res, true
 }
 
 func (db *MongoDB) UpdateUser(u models.User) {

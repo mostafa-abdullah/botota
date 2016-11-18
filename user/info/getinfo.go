@@ -13,6 +13,14 @@ import (
 //receives the chatting user and the sent message
 //returns the next question, an error message and a boolean to indicate if all questions were asked
 func Process(u models.User, msg string) (models.Question, error, bool) {
+  var nq models.Question
+
+  if(u.CurrentQuestionId == 0) {
+    // done with all the questions
+    return nq, nil, true
+  }
+
+
   // Get the question previously asked to the user
   cq := database.Mongo.GetCurrentQuestion(u)
 
@@ -23,7 +31,6 @@ func Process(u models.User, msg string) (models.Question, error, bool) {
   }
 
   // Validation succeeded. Store in the database
-  var nq models.Question
   u.CurrentQuestionId = cq.NextQuestionId
   storeInfo(u, msg, cq.Id)
 
@@ -45,10 +52,11 @@ func validate(cq models.Question, u models.User, msg string) error {
       return errors.New("Invalid Input: the given message doesn't match the required format!")
   }
 
+
   if cq.Id == 5 {
     i, err := strconv.Atoi(msg)
     utils.Check(err)
-    if  i >= len(u.Hotels) {
+    if  i > len(u.Hotels) || i <= 0 {
       return errors.New("Invalid Input: The hotel number is invalid.")
     }
   }
