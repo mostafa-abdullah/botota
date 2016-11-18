@@ -106,11 +106,6 @@ func (db *MongoDB) GetNextQuestion(q models.Question) models.Question {
 
 func (db *MongoDB) SeedQuestionsIfNotSeeded() {
 	count := questionsCount(db)
-
-	if(count > 0) {
-		return
-	}
-
 	var qArr []models.Question
 
 	// read the json file
@@ -121,6 +116,13 @@ func (db *MongoDB) SeedQuestionsIfNotSeeded() {
 	jsonParser := json.NewDecoder(jsonFile)
 	err = jsonParser.Decode(&qArr)
 	utils.Check(err)
+
+	//check if all questions already seeded
+	if(count == len(qArr)) {
+		return
+	}else{
+		db.ClearQuestions()
+	}
 
 	// insert the data into the Database
 	for _, q := range qArr {
