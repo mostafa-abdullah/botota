@@ -27,7 +27,13 @@
   {
     "Id": 5,
     "Text": "Please choose a hotel from below.(Pick its number!)",
-    "NextQuestionId": null,
+    "NextQuestionId": 6,
     "Regex": "^\\d+$"
+  },
+  {
+    "Id": 6,
+    "Text": "Have an incredible journey! Do you want to plan another trip?(y/n)",
+    "NextQuestionId": null,
+    "Regex": "^[yYnN]$"
   }
 ]

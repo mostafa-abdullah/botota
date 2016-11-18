@@ -8,40 +8,39 @@ import (
 	"regexp"
 	"strconv"
 	"time"
+	"strings"
 )
 
 //GetInfo validates the message sent by the user and moves to next question
 //receives the chatting user and the sent message
 //returns the next question, an error message and a boolean to indicate if all questions were asked
 func Process(u models.User, msg string) (models.Question, error, bool) {
-	var nq models.Question
-
-	if u.CurrentQuestionId == 0 {
-		// done with all the questions
-		return nq, nil, true
-	}
-
 	// Get the question previously asked to the user
 	cq := database.Mongo.GetCurrentQuestion(u)
 
 	err := validate(cq, u, msg)
 
 	if err != nil {
-		return cq, err, false
+		return cq, err,false
 	}
 
 	// Validation succeeded. Store in the database
+	//move to next question
 	u.CurrentQuestionId = cq.NextQuestionId
 	storeInfo(u, msg, cq.Id)
 
-	if u.CurrentQuestionId == 0 {
-		// done with all the questions
-		return nq, err, true
+	if u.CurrentQuestionId == 0{
+			// done with all the questions
+		if strings.EqualFold(msg,"n"){
+ 			//no more chat
+			return models.Question{Id: 0}, err,true
+		}else{
+			//restart
+			return database.Mongo.GetFirstQuestion(),err,false
+		}
 	}
-
-	nq = database.Mongo.GetNextQuestion(cq)
-
-	return nq, err, false
+	nq := database.Mongo.GetCurrentQuestion(u)
+	return nq, err,false
 }
 
 //validate makes sure that the user sent a valid message according to the asked question.
@@ -101,7 +100,21 @@ func storeInfo(u models.User, msg string, qid int) {
 		hotelIdx, err = strconv.Atoi(msg)
 		utils.Check(err)
 		u.ChosenHotel = u.Hotels[hotelIdx-1]
+	case 6:
+		if strings.EqualFold(msg,"y"){
+			clearUserInfo(&u)
+		}else{
+			return
+		}
 	}
 
 	database.Mongo.UpdateUser(u)
+}
+func clearUserInfo(u *models.User){
+	u.Destination = ""
+	u.StartDate	=	""
+	u.EndDate	=	""
+	u.Hotels	=	[]models.Place{}
+	u.ChosenHotel = models.Place{}
+	u.CurrentQuestionId = 1
 }

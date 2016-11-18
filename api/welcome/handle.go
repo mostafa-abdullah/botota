@@ -7,7 +7,9 @@ import (
 	"github.com/satori/go.uuid"
 	"net/http"
 )
-
+const (
+	welcomeMessage = "Welcome to Botota! Your customized trip planner!"
+)
 type Response struct {
 	Message string `json:"message"`
 	Uuid    string `json:"uuid"`
@@ -28,10 +30,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	database.Mongo.CreateUser(user)
 
 	//get first question
-	q := database.Mongo.GetFirstQuestion().Text
-
+	q		:= database.Mongo.GetFirstQuestion().Text
+	msg	:= welcomeMessage + " " + q
 	//prepare response
-	res := Response{q, u}
+	res := Response{msg, u}
 
 	//write json response
 	w.Header().Set("Content-Type", "application/json")
