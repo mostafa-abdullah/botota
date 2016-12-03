@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	byeMessage     = "Thank you for using botota! It's been nice chatting with you!"
+	byeMessage = "Thank you for using botota! It's been nice chatting with you!"
 )
 
 type Response struct {
-	Message string `json:"message"`
+	Messages []models.Message `json:"messages"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -53,67 +53,74 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-func getReply(u models.User, msg string) string {
+func getReply(u models.User, msg string) []models.Message {
+	reply := []models.Message{}
 	q, err, done := info.Process(u, msg)
+
 	if err != nil {
-		ret := err.Error() + "\n" + q.Text
+		highlight := err.Error()
+		value := q.Text
 
 		if q.Id == 5 {
-			ret += "\n" + formattedHotels(u.Hotels)
+			value += "\n" + formattedHotels(u.Hotels)
 		}
-
-		return ret
+		msg	:= models.Message{Highlight : highlight, Value: value}
+		reply = append(reply, msg)
 	}
 
-	reply := ""
 	switch q.Id {
 	case 0:
 		if done {
-			return byeMessage
+			msg := models.Message{Highlight : byeMessage}
+			reply = append(reply, msg)
+			return reply
 		}
-	case 6:
-		// Gathered all info; return the schedule
-		updatedUser, _ := database.Mongo.GetUser(u.Uuid)
-		schedule := GooglePlacesAPIHandler.CreateSchedule(u.Destination, updatedUser.ChosenHotel, u.StartDate, u.EndDate)
-		reply = schedule + "\n"
 	case 5:
-		// Retrieve the list of hotels if not already retrieved
+		// Retrieve the list of hotels from database if not already retrieved
 		var hotels []models.Place
 		if len(u.Hotels) > 0 {
 			hotels = u.Hotels
-		} else {
-			hotels = GooglePlacesAPIHandler.GetHotels(u.Destination)
-			updatedUser, _ := database.Mongo.GetUser(u.Uuid)
-			updatedUser.Hotels = hotels
+			} else {
+				hotels = GooglePlacesAPIHandler.GetHotels(u.Destination)
+				updatedUser, _ := database.Mongo.GetUser(u.Uuid)
+				updatedUser.Hotels = hotels
 
-			database.Mongo.UpdateUser(updatedUser)
+				database.Mongo.UpdateUser(updatedUser)
+			}
+
+			// return formatted list of hotels
+			highlight := q.Text
+			value			:= formattedHotels(hotels)
+			msg 			:= models.Message{Highlight: highlight, Value: value}
+			reply = append(reply, msg)
+			return reply
+		case 6:
+			// Gathered all info; return the schedule
+			updatedUser, _ := database.Mongo.GetUser(u.Uuid)
+			schedule := GooglePlacesAPIHandler.CreateSchedule(u.Destination, updatedUser.ChosenHotel, u.StartDate, u.EndDate)
+			reply = append(reply, schedule...)
+		}
+		reply = append(reply, models.Message{Value: q.Text})
+		return reply
+	}
+
+	//formattedHotels returns a list of hotels in this form:
+	//1) Hotel1
+	//2) Hotel2
+	//....
+	func formattedHotels(hotels []models.Place) string {
+		res := ""
+
+		for i, h := range hotels {
+			res += strconv.Itoa(i+1) + ") " + h.Name + `.`
 		}
 
-		// return formatted list of hotels
-		return q.Text + `
-    ` + formattedHotels(hotels)
-	}
-	return reply + q.Text
-
-}
-
-//formattedHotels returns a list of hotels in this form:
-//1) Hotel1
-//2) Hotel2
-//....
-func formattedHotels(hotels []models.Place) string {
-	res := ""
-
-	for i, h := range hotels {
-		res += strconv.Itoa(i+1) + ") " + h.Name + `.`
+		return res
 	}
 
-	return res
-}
+	//getAuthorizedUser returns the user if he is authorized, otherwise returns a false flag
+	func getAuthorizedUser(uuid string) (models.User, bool) {
+		user, exists := database.Mongo.GetUser(uuid)
 
-//getAuthorizedUser returns the user if he is authorized, otherwise returns a false flag
-func getAuthorizedUser(uuid string) (models.User, bool) {
-	user, exists := database.Mongo.GetUser(uuid)
-
-	return user, exists
-}
+		return user, exists
+	}
