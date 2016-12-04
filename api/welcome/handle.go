@@ -11,7 +11,7 @@ const (
 	welcomeMessage = "Welcome to Botota! Your customized trip planner!"
 )
 type Response struct {
-	Message string `json:"message"`
+	Message models.Message `json:"message"`
 	Uuid    string `json:"uuid"`
 }
 
@@ -31,7 +31,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	//get first question
 	q		:= database.Mongo.GetFirstQuestion().Text
-	msg	:= welcomeMessage + " " + q
+	msg	:= models.Message{Highlight : welcomeMessage, Value : q}
 	//prepare response
 	res := Response{msg, u}
 
