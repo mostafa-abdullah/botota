@@ -9,6 +9,7 @@ import (
 	"time"
 	"strconv"
 	"fmt"
+	"botota/ImagesAPIHandler"
 )
 
 const (
@@ -105,6 +106,8 @@ func GetNearRestaurants(hotel models.Place) []models.Place {
 
 			res = append(res, models.Message{highlight,value,image})
 		}
+
+		res = append(res, ImagesAPIHandler.GetImagesMessages(destination)...)
 
 		return res;
 	}
